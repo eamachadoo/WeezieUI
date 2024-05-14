@@ -46,6 +46,8 @@ export default {
         width: 200px; /* Adjust as needed */
         height: 100%;
         background-color: #e7e7e7; /* Adjust as needed */
+        overflow-y: auto;
+        padding-bottom: 70px;
 }
 
 .search-button {
