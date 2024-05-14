@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <LayerSidebar/>
+    <PropertiesSidebar/>
     <img alt="Vue logo" src="./assets/weezielogo.png">
     <MainComponent msg="Welcome to Your Vue.js App"/>
   </div>
@@ -9,12 +10,14 @@
 <script>
 import MainComponent from './components/MainComponent.vue'
 import LayerSidebar from './components/LayerSidebar.vue'
+import PropertiesSidebar from './components/PropertiesSidebar.vue'
 
 export default {
   name: 'App',
   components: {
     MainComponent,
-    LayerSidebar
+    LayerSidebar,
+    PropertiesSidebar
   }
 }
 </script>

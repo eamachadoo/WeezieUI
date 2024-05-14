@@ -1,10 +1,12 @@
 <template>
-        <div class="layer-sidebar">
+  <div class="layer-sidebar">
     <div class="search-container">
       <v-text-field label="Layer" v-model="layer"></v-text-field>
       <button @click="searchLayer" class="search-button">Search</button>
+      <button v-if="columnNames.length > 0" @click="selectFields" class="search-button">Select({{ selectedFields.length }})</button>
     </div>
     <div v-for="(name, index) in columnNames" :key="index">
+      <input type="checkbox" :value="name" v-model="selectedFields">
       {{ name }}
     </div>
   </div>
@@ -17,7 +19,8 @@ export default {
     data() {
         return {
             layer: '',
-            columnNames: [] 
+            columnNames: [],
+            selectedFields: [] 
         };
     },
     methods: {
@@ -35,19 +38,24 @@ export default {
             } catch (error) {
                 console.error(error); // displays in errors
             }
+        },
+        selectFields() {
+            // Handle the select fields action here
         }
     }
 }
 </script>
+
 <style scoped>
 .layer-sidebar {
         position: fixed;
         right: 0;
-        width: 200px; /* Adjust as needed */
-        height: 100%;
+        top: 0;
+        width: 250px; /* Adjust as needed */
+        height: 80%;
         background-color: #e7e7e7; /* Adjust as needed */
         overflow-y: auto;
-        padding-bottom: 70px;
+        padding-bottom: 20px;
 }
 
 .search-button {
