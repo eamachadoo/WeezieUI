@@ -37,6 +37,6 @@ export default {
   top: 0;
   left: 0;
   width: 300px;
-  height: 200px;
+  height: 180px;
 }
 </style>

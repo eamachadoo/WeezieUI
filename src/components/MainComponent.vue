@@ -1,6 +1,6 @@
 <template>
   <div class="mainComponent">
-    
+    skibifi
   </div>
 </template>
 
@@ -16,7 +16,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainComponent {
-  width: calc(100% - 300px);
+  width: calc(100% - 250px);
 }
 h3 {
   margin: 40px 0 0;
