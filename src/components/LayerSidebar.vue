@@ -1,16 +1,16 @@
 <template>
-  <div class="layer-sidebar">
-    <div class="search-container">
-      <v-text-field label="Layer" v-model="layer"></v-text-field>
-      <button @click="searchLayer" class="search-button">Search</button>
-      <button v-if="columnNames.length > 0" @click="selectFields" class="search-button">Select({{ selectedFields.length }})</button>
+    <div class="layer-sidebar">
+      <div class="search-container">
+        <v-autocomplete label="Layer" v-model="layer" :items="layerNames"></v-autocomplete>
+        <button @click="searchLayer" class="search-button">Search</button>
+        <button v-if="columnNames.length > 0" @click="selectFields" class="search-button">Select({{ selectedFields.length }})</button>
+      </div>
+      <div class = "atributes" v-for="(name, index) in columnNames" :key="index">
+        <input type="checkbox" :value="name" v-model="selectedFields">
+        {{ name }}
+      </div>
     </div>
-    <div class = "atributes" v-for="(name, index) in columnNames" :key="index">
-      <input type="checkbox" :value="name" v-model="selectedFields">
-      {{ name }}
-    </div>
-  </div>
-</template>
+  </template>
 
 <script>
 import axios from 'axios';
@@ -19,6 +19,7 @@ export default {
     data() {
         return {
             layer: '',
+            layerNames: [],
             columnNames: [],
             selectedFields: [] 
         };
@@ -29,6 +30,22 @@ export default {
     },
   },
     methods: {
+        async created() {
+            console
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/api/layers');
+                console.log('API response:', response.data.data); // Log the response data
+
+                if (Array.isArray(response.data.data)) {
+                    this.layerNames = response.data.data.map(item => item.table_name) // Assign response.data.data to this.layerNames
+                } else {
+                    console.error('Unexpected response data:', response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching layer names:', error); // Log any errors
+            }
+        },
+        /*
         async searchLayer() {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/annotation_points/${this.layer}`, {
@@ -43,12 +60,12 @@ export default {
             } catch (error) {
                 console.error(error); // displays in errors
             }
-        },
+        }, */
         selectFields() {
             let filteredFields = this.selectedFields.filter(field => field !== 'NULL');
             console.log(filteredFields);
             this.$emit('update-attributes', filteredFields);
-        }
+        },
     }
 }
 </script>
