@@ -2,17 +2,15 @@
   <div class="mainComponent">
     <img alt="Vue logo" src="../assets/weezielogo.png">
     <LayerSidebar @update-attributes="updateAttributes" />
-    <PropertiesSidebar @update-properties="updateProperties" />
+    <PropertiesSidebar @update-properties="updateFilteredProperties" />
     <div v-for="(item, index) in finalList" :key="index">
       {{ item }}
     </div>
   </div>
 </template>
-
 <script>
 import PropertiesSidebar from './PropertiesSidebar.vue';
 import LayerSidebar from './LayerSidebar.vue';
-
 export default {
   name: 'MainComponent',
   components: {
@@ -22,12 +20,12 @@ export default {
   data() {
     return {
       attributes: [],
-      properties: [],
+      filteredProperties: [], // Add this line
     };
   },
   computed: {
     finalList() {
-      const list = [...this.attributes, ...this.properties];
+      const list = [...this.attributes, ...this.filteredProperties.map(property => `${property.name}: ${property.value}`)];
       console.log('Final list:', list);
       return list;
     },
@@ -37,9 +35,9 @@ export default {
       this.attributes = attributes;
       console.log('Selected atributes:', this.attributes);
     },
-    updateProperties(properties) {
-      this.properties = properties.map(property => property.name);
-      console.log('Selected properties:', this.properties);
+    updateFilteredProperties(properties) { // Change this method name
+      this.filteredProperties = properties; // Change this line
+      console.log('Selected properties:', this.filteredProperties); // Change this line
     },
   },
 };
