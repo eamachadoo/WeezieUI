@@ -31,7 +31,7 @@ export default {
     position: fixed;
     right: 0;
     top: 80%;
-    width: 250px; /* Adjust as needed */
+    width: 300px; /* Adjust as needed */
     height: calc(100% - 250px); /* Adjust as needed */
     background-color: #e7e7e7; /* Adjust as needed */
     overflow-y: auto;

@@ -5,7 +5,7 @@
       <button @click="searchLayer" class="search-button">Search</button>
       <button v-if="columnNames.length > 0" @click="selectFields" class="search-button">Select({{ selectedFields.length }})</button>
     </div>
-    <div v-for="(name, index) in columnNames" :key="index">
+    <div class = "atributes" v-for="(name, index) in columnNames" :key="index">
       <input type="checkbox" :value="name" v-model="selectedFields">
       {{ name }}
     </div>
@@ -51,7 +51,7 @@ export default {
         position: fixed;
         right: 0;
         top: 0;
-        width: 250px; /* Adjust as needed */
+        width: 300px; /* Adjust as needed */
         height: 80%;
         background-color: #e7e7e7; /* Adjust as needed */
         overflow-y: auto;
@@ -61,5 +61,9 @@ export default {
 .search-button {
   padding: 10px;
   background-color: #dadada;
+}
+
+.layer-sidebar div.atributes {
+  text-align: left;
 }
 </style>
