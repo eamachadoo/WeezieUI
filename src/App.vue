@@ -2,8 +2,7 @@
   <div id="app">
     <LayerSidebar/>
     <PropertiesSidebar/>
-    <img alt="Vue logo" src="./assets/weezielogo.png">
-    <MainComponent msg="Welcome to Your Vue.js App"/>
+    <MainComponent/>
   </div>
 </template>
 

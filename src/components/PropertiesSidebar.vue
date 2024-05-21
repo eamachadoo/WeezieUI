@@ -2,8 +2,14 @@
     <div class="properties-sidebar">
         <h3>Properties</h3>
         <div v-for="(property, index) in properties" :key="index">
-            <input type="checkbox" :value="property" v-model="selectedProperties">
-            {{ property }}
+            <label>{{ property.name }}</label>
+            <input v-if="property.type === 'integer'" type="number" :value="property.value" @input="updateProperty(index, $event.target.value)">
+            <select v-else-if="property.type === 'size'" :value="property.value" @change="updateProperty(index, $event.target.value)">
+                <option>S</option>
+                <option>M</option>
+                <option>L</option>
+            </select>
+            <input v-else-if="property.type === 'boolean'" type="checkbox" :checked="property.value" @change="updateProperty(index, $event.target.checked)">
         </div>
         <button @click="applyProperties" class="apply-button">Apply</button>
     </div>
@@ -14,13 +20,22 @@ export default {
     name: 'PropertiesSidebar',
     data() {
         return {
-            properties: ['Index', 'Size', 'Required'],
-            selectedProperties: []
+            properties: [
+                { name: 'Index', type: 'integer', value: 0 },
+                { name: 'Size', type: 'size', value: 'NULL' },
+                { name: 'Required', type: 'boolean', value: false }
+            ]
         };
     },
     methods: {
+        updateProperty(index, value) {
+            this.properties[index].value = value;
+            console.log('Updated property:', this.properties[index]); //log
+        },
         applyProperties() {
-            // Handle the apply properties action here
+            let filteredProperties = this.properties.filter(property => property.value !== 'NULL');
+            console.log('Applied properties:', filteredProperties); //log
+            this.$emit('update-properties', filteredProperties);
         }
     }
 }

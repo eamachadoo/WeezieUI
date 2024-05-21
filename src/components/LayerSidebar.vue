@@ -23,6 +23,11 @@ export default {
             selectedFields: [] 
         };
     },
+    watch: {
+    selectedFields(newVal) {
+      console.log(newVal);
+    },
+  },
     methods: {
         async searchLayer() {
             try {
@@ -40,7 +45,9 @@ export default {
             }
         },
         selectFields() {
-            // Handle the select fields action here
+            let filteredFields = this.selectedFields.filter(field => field !== 'NULL');
+            console.log(filteredFields);
+            this.$emit('update-attributes', filteredFields);
         }
     }
 }
