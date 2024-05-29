@@ -3,9 +3,18 @@
     <img alt="Vue logo" src="../assets/weezielogo.png">
     <LayerSidebar @update-attributes="updateAttributes" />
     <PropertiesSidebar @update-properties="updateFilteredProperties" />
-    <div v-for="(item, index) in finalList" :key="index">
-      {{ item }}
-    </div>
+    <v-row>
+      <v-col v-for="(item, index) in finalList" :key="index" cols="8" md="3"> <!--md é que mexe com o tamanho das caixas -->
+        <v-card>
+          <v-card-title>{{ item.column_name }}</v-card-title>
+          <v-card-text>
+            Data Type: {{ item.dataType }}<br>
+            Constraints: {{ item.constraints }}<br>
+            Referenced Table: {{ item.referenced_table }}
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 <script>
@@ -20,24 +29,27 @@ export default {
   data() {
     return {
       attributes: [],
-      filteredProperties: [], // Add this line
+      filteredProperties: [], 
     };
   },
   computed: {
     finalList() {
-      const list = [...this.attributes, ...this.filteredProperties.map(property => `${property.name}: ${property.value}`)];
+      const list = [...this.attributes, ...this.filteredProperties.map(property => ({title: property.name, value: property.value}))];
       console.log('Final list:', list);
       return list;
     },
   },
   methods: {
-    updateAttributes(attributes) {
-      this.attributes = attributes;
-      console.log('Selected atributes:', this.attributes);
+    updateAttributes({ fields, attributes }) {
+      this.attributes = attributes.map((attribute, index) => ({
+        column_name: fields[index],
+        ...attribute
+      }));
+      console.log('Selected attributes:', this.attributes);
     },
-    updateFilteredProperties(properties) { // Change this method name
-      this.filteredProperties = properties; // Change this line
-      console.log('Selected properties:', this.filteredProperties); // Change this line
+    updateFilteredProperties(properties) { 
+      this.filteredProperties = properties; 
+      console.log('Selected properties:', this.filteredProperties); 
     },
   },
 };

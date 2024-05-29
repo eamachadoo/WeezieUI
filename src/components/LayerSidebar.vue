@@ -20,11 +20,17 @@ export default {
     data() {
         return {
             layer: '',
-            layerNames: [],
+            layerAttributes: [],
             columnNames: [],
             selectedFields: [] 
         };
     },
+    updated() {
+    console.log('Layer:', this.layer);
+    console.log('Layer Attributes:', this.layerAttributes);
+    console.log('Column Names:', this.columnNames);
+    console.log('Selected Fields:', this.selectedFields);
+  },
     watch: {
     selectedFields(newVal) {
       console.log(newVal);
@@ -50,12 +56,18 @@ export default {
         */
         async searchLayer() {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/annotation_points/${this.layer}`, {
+                const response = await axios.get(`http://127.0.0.1:8000/api/layerAttributes/${this.layer}`, {
                     tableName: this.layer
                 });
                 console.log(response.data.data);
                 if (Array.isArray(response.data.data)) {
                     this.columnNames = response.data.data.map(item => item.column_name);
+                    this.layerAttributes = response.data.data.map(attributes => ({ 
+                        column_name: attributes.column_name,
+                        dataType: attributes.data_type, 
+                        constraints : attributes.constraints,
+                        referenced_table : attributes.referenced_table,
+                    }));
                 } else {
                     console.error('Unexpected response data:', response.data);
                 }
@@ -66,7 +78,14 @@ export default {
         selectFields() {
             let filteredFields = this.selectedFields.filter(field => field !== 'NULL');
             console.log(filteredFields);
-            this.$emit('update-attributes', filteredFields);
+
+            // Find the corresponding attributes for each selected field
+            let selectedAttributes = this.layerAttributes.filter(attribute => 
+                filteredFields.includes(attribute.column_name)
+            );
+
+            // Emit the selected fields and their corresponding attributes
+            this.$emit('update-attributes', { fields: filteredFields, attributes: selectedAttributes });
         },
     }
 }
