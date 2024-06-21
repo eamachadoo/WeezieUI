@@ -13,7 +13,9 @@
             Referenced Table: {{ item.referenced_table }}
           </v-card-text>
           <v-card-actions>
-            <v-btn @click="uncheckProperty(item.column_name)">Uncheck</v-btn>
+            <v-btn class= "remove-button" @click="uncheckProperty(item.column_name)">
+              <i class="fas fa-times remove-icon"></i>
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -73,5 +75,11 @@ export default {
 .mainComponent {
   padding-top: 80px;
   padding-right: 300px; /* Adjust as needed */
+}
+.remove-button {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
