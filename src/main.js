@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import mitt from 'mitt'
 
 // Vuetify
 import '@mdi/font/css/materialdesignicons.css'
@@ -13,5 +14,8 @@ const vuetify = createVuetify({
   directives
 })
 
-createApp(App).use(vuetify).mount('#app')
+const eventBus = mitt()
 
+const app = createApp(App)
+app.config.globalProperties.$bus = eventBus
+app.use(vuetify).mount('#app')

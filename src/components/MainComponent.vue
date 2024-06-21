@@ -1,10 +1,10 @@
 <template>
   <div class="mainComponent">
     <img alt="Vue logo" src="../assets/weezielogo.png">
-    <LayerSidebar @update-attributes="updateAttributes" />
+    <LayerSidebar ref="layerSidebar" @update-attributes="updateAttributes" @uncheck-property="uncheckProperty" />
     <PropertiesSidebar @update-properties="updateFilteredProperties" />
     <v-row>
-      <v-col v-for="(item, index) in finalList" :key="index" cols="8" md="3"> <!--md é que mexe com o tamanho das caixas -->
+      <v-col v-for="(item, index) in finalList" :key="index" cols="8" md="3">
         <v-card>
           <v-card-title>{{ item.column_name }}</v-card-title>
           <v-card-text>
@@ -12,6 +12,9 @@
             Constraints: {{ item.constraints }}<br>
             Referenced Table: {{ item.referenced_table }}
           </v-card-text>
+          <v-card-actions>
+            <v-btn @click="uncheckProperty(item.column_name)">Uncheck</v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -39,6 +42,9 @@ export default {
       return list;
     },
   },
+  created(){
+  this.$bus.on('uncheck-property', this.uncheckProperty);
+},
   methods: {
     updateAttributes({ fields, attributes }) {
       this.attributes = attributes.map((attribute, index) => ({
@@ -51,6 +57,21 @@ export default {
       this.filteredProperties = properties; 
       console.log('Selected properties:', this.filteredProperties); 
     },
+    uncheckProperty(columnName) {
+      const index = this.attributes.findIndex(attribute => attribute.column_name === columnName);
+      if (index !== -1) {
+        this.attributes.splice(index, 1);
+        // Emit an event to uncheck the checkbox in LayerSidebar
+        this.$bus.emit('uncheck-property', columnName);
+        return; // Break the loop
+      }
+    },
   },
 };
 </script>
+<style scoped>
+.mainComponent {
+  padding-top: 80px;
+  padding-right: 300px; /* Adjust as needed */
+}
+</style>

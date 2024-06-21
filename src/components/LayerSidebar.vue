@@ -6,13 +6,11 @@
       <button v-if="columnNames.length > 0" @click="selectFields" class="search-button">Select({{ selectedFields.length }})</button>
     </div>
     <div class = "atributes" v-for="(name, index) in columnNames" :key="index">
-      <input type="checkbox" :value="name" v-model="selectedFields">
+      <input type="checkbox" :value="name" v-model="selectedFields" ref="layerSidebar">
       {{ name }}
     </div>
   </div>
 </template>
-
-
 <script>
 import axios from 'axios';
 export default {
@@ -36,6 +34,12 @@ export default {
       console.log(newVal);
     },
   },
+  created(){
+    this.$bus.on('uncheck-property', this.uncheck);
+  },
+  beforeUnmount() {
+  this.$bus.off('uncheck-property', this.uncheck);
+},
     methods: {
         /*
         async created() {
@@ -54,6 +58,13 @@ export default {
             }
         },
         */
+        uncheck(columnName) {
+            const index = this.selectedFields.indexOf(columnName);
+            if (index !== -1) {
+                this.selectedFields.splice(index, 1);
+                return; // Break the loop
+            }
+        },
         async searchLayer() {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/layerAttributes/${this.layer}`, {
