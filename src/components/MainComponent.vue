@@ -8,9 +8,12 @@
         <v-card>
           <v-card-title>{{ item.column_name }}</v-card-title>
           <v-card-text>
-            Data Type: {{ item.dataType }}<br>
-            Constraints: {{ item.constraints }}<br>
-            Referenced Table: {{ item.referenced_table }}
+          Data Type: {{ item.dataType }}<br>
+          Constraints: {{ item.constraints }}<br>
+          Referenced Table: {{ item.referenced_table }}
+          <span v-for="property in filteredPropertiesList" :key="property.name">
+            {{ property.name }}: {{ property.value }}<br>
+          </span>
           </v-card-text>
           <v-card-actions>
             <v-btn class= "remove-button" @click="uncheckProperty(item.column_name)">
@@ -34,15 +37,25 @@ export default {
   data() {
     return {
       attributes: [],
-      filteredProperties: [], 
+      filteredProperties: {},
+      properties: [], 
     };
   },
   computed: {
+    filteredPropertiesList() {
+    return this.properties.filter(property => this.filteredProperties[property.name]);
+  },
     finalList() {
-      const list = [...this.attributes, ...this.filteredProperties.map(property => ({title: property.name, value: property.value}))];
-      console.log('Final list:', list);
-      return list;
-    },
+    return this.attributes.map(attribute => {
+      let attributeWithProperties = {...attribute};
+      for (let propertyName in this.filteredProperties) {
+        if (attribute.column_name === propertyName) {
+          attributeWithProperties[propertyName] = this.filteredProperties[propertyName];
+        }
+      }
+      return attributeWithProperties;
+    });
+  },
   },
   created(){
   this.$bus.on('uncheck-property', this.uncheckProperty);
@@ -56,7 +69,11 @@ export default {
       console.log('Selected attributes:', this.attributes);
     },
     updateFilteredProperties(properties) { 
-      this.filteredProperties = properties; 
+      this.filteredProperties = properties.reduce((acc, property) => {
+        acc[property.name] = property.value;
+        return acc;
+      }, {});
+      this.properties = properties; 
       console.log('Selected properties:', this.filteredProperties); 
     },
     uncheckProperty(columnName) {
