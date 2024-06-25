@@ -43,28 +43,37 @@ export default {
   },
   computed: {
     filteredPropertiesList() {
-    return this.properties.filter(property => this.filteredProperties[property.name]);
-  },
+      return this.properties.filter(property => this.filteredProperties[property.name]);
+    },
     finalList() {
-    return this.attributes.map(attribute => {
-      let attributeWithProperties = {...attribute};
-      for (let propertyName in this.filteredProperties) {
-        if (attribute.column_name === propertyName) {
-          attributeWithProperties[propertyName] = this.filteredProperties[propertyName];
+      return this.attributes.map((attribute, index) => {
+        let attributeWithProperties = {...attribute};
+        const property = this.properties.find(prop => prop.name === 'Index' && prop.value === index);
+        if (property) {
+          attributeWithProperties = {...attributeWithProperties, ...property};
         }
-      }
-      return attributeWithProperties;
-    });
-  },
+        console.log('Attribute with properties:', attributeWithProperties);
+        return attributeWithProperties;
+      });
+    }
   },
   created(){
+  this.$bus.on('update-properties', this.updateProperties);
   this.$bus.on('uncheck-property', this.uncheckProperty);
 },
   methods: {
+    updateProperties(properties) {
+      const index = this.filteredProperties['Index'];
+      if (index !== undefined && this.attributes[index]) {
+        this.attributes[index] = properties;
+      }
+      console.log('Updated properties:', this.attributes);
+    },
     updateAttributes({ fields, attributes }) {
       this.attributes = attributes.map((attribute, index) => ({
         column_name: fields[index],
-        ...attribute
+        ...attribute,
+        Index: index
       }));
       console.log('Selected attributes:', this.attributes);
     },

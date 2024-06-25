@@ -42,7 +42,7 @@ export default {
         applyProperties() {
             let filteredProperties = this.properties.filter(property => property.value);
             console.log('Applied properties:', filteredProperties); //log
-            this.$emit('update-properties', filteredProperties);
+            this.$emit('update-properties', filteredProperties, this.properties.findIndex(property => property.name === 'Index'));
         }
     }
 }
